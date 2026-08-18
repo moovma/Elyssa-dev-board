@@ -24,7 +24,7 @@ File → Preferences
 Additional Board Manager URLs:
 
 [link to copy in the arduino ide references
-](https://bejaouihamza.github.io/Elyssa-dev-board/elyssa-arduino/package_bejaouihamza_elyssa_index.json)
+](https://moovma.github.io/Elyssa-dev-board/elyssa-arduino/package_moovma_elyssa_index.json)
 Open:
 
 Tools → Board → Boards Manager
