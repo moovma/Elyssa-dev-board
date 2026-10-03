@@ -7,11 +7,12 @@ ESP32-S3FN8 based development board by Moovma.
 - ESP32-S3FN8
 - 8 MB Flash
 - USB Programming
-- Dedicated Gyroscope I2C
+- RGB LED (red, green, blue channels)
+- 6-axis motion sensor (IMU: accelerometer + gyroscope) on a dedicated I2C bus
 - SD Card SPI
 - Primary SPI
 - PWM support
-- Arduino IDE support
+- Arduino IDE support, with built-in RGB LED and IMU functions
 
 ---
 
@@ -51,6 +52,51 @@ Select the port that appears and click **Upload** again. This is usually needed 
 ### Serial Monitor
 
 Open **Tools → Serial Monitor**. Press **RESET** to see the first messages.
+
+---
+
+## RGB LED
+
+Built into the board package: no `#include` needed.
+
+```cpp
+setLedColor(ELYSSA_GREEN);     // ELYSSA_OFF, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE
+setLedRGB(255, 80, 0);         // any mix, 0..255 per channel
+```
+
+| Channel | Pin |
+|---|---|
+| Red | `LED_RED` = GPIO39 |
+| Green | `LED_GREEN` = GPIO38 (`LED_BUILTIN`, so Blink works) |
+| Blue | `LED_BLUE` = GPIO33 |
+
+---
+
+## Motion sensor (IMU)
+
+The board has an STMicroelectronics LSM6DS3TR-C: accelerometer (in g) and gyroscope (in degrees per second). The basic functions are built into the board package, with no `#include`:
+
+```cpp
+void setup() {
+  Serial.begin(115200);
+  if (!elyssa_imu_begin()) Serial.println("IMU not found");
+  elyssa_imu_enable_tap();
+}
+
+void loop() {
+  float x, y, z;
+  elyssa_imu_read_accel(x, y, z);
+  Serial.printf("x %.2f  y %.2f  z %.2f g\n", x, y, z);
+  if (elyssa_imu_tapped()) setLedColor(ELYSSA_GREEN);
+  delay(10);
+}
+```
+
+Basic functions: reading (acceleration, rotation, temperature), ranges, sample rate, low power, pitch / roll / orientation, gyroscope calibration, tap and double tap, free-fall, motion, step counter, wake-up from deep sleep by motion.
+
+Advanced functions (recording, filters, self-test, accelerometer calibration, stillness, tilt, wrist tilt, significant motion, interrupt pin...) are in the **ElyssaIMU** library, also included in the board package: add `#include <ElyssaIMU.h>`.
+
+Examples: **File → Examples → ElyssaIMU** (Basics and Advanced). Full reference: [ElyssaIMU README](platform/libraries/ElyssaIMU/README.md). Known limitations: [TIPS_AND_KNOWN_ISSUES.md](TIPS_AND_KNOWN_ISSUES.md).
 
 ---
 

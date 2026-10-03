@@ -25,21 +25,90 @@
 //
 #ifdef __cplusplus
 bool hello_elyssa(uint32_t wait_ms = 3000);
-bool    elyssa_imu_begin();
-bool    elyssa_imu_ready();
-uint8_t elyssa_imu_whoami();
-uint8_t elyssa_imu_read_reg(uint8_t reg);
+bool    elyssa_imu_begin();              // start the IMU (call first)
+bool    elyssa_imu_ready();              // true when a new sample is ready
 
-float gyro_return_ax();
+// IMU reading: acceleration in g, rotation in degrees per second, temperature in C
+float elyssa_imu_accel_x();
+float elyssa_imu_accel_y();
+float elyssa_imu_accel_z();
+float elyssa_imu_gyro_x();
+float elyssa_imu_gyro_y();
+float elyssa_imu_gyro_z();
+float elyssa_imu_temperature();
+bool  elyssa_imu_read_accel(float &x, float &y, float &z);   // 3 axes, same sample
+bool  elyssa_imu_read_gyro(float &x, float &y, float &z);    // 3 axes, same sample
+
+// Low-level, and older names kept for compatibility (same values as above)
+uint8_t elyssa_imu_whoami();             // 0x6A
+uint8_t elyssa_imu_read_reg(uint8_t reg);
+float gyro_return_ax();                  // = elyssa_imu_gyro_x()
 float gyro_return_ay();
 float gyro_return_az();
-
-float accel_return_ax();
+float accel_return_ax();                 // = elyssa_imu_accel_x()
 float accel_return_ay();
 float accel_return_az();
+bool  elyssa_imu_read(float gyro[3], float accel[3], float *temp_c);  // gyro FIRST
 
-float elyssa_imu_temperature();
-bool  elyssa_imu_read(float gyro[3], float accel[3], float *temp_c);
+// IMU settings
+bool     elyssa_imu_set_accel_range(uint8_t g);    // 2, 4, 8, 16
+uint8_t  elyssa_imu_get_accel_range();
+bool     elyssa_imu_set_gyro_range(uint16_t dps);  // 125, 250, 500, 1000, 2000
+uint16_t elyssa_imu_get_gyro_range();
+bool     elyssa_imu_set_rate(float hz);            // 12.5 .. 6660 Hz, both sensors
+float    elyssa_imu_get_rate();
+bool     elyssa_imu_low_power(bool on);
+
+// IMU angles and orientation (from gravity)
+enum ElyssaOrientation : uint8_t {
+  ELYSSA_ORIENTATION_UNKNOWN,   // between two sides
+  ELYSSA_FACE_UP,               // +Z up (board flat, components up)
+  ELYSSA_FACE_DOWN,
+  ELYSSA_X_UP,
+  ELYSSA_X_DOWN,
+  ELYSSA_Y_UP,
+  ELYSSA_Y_DOWN
+};
+float elyssa_imu_pitch();                          // degrees
+float elyssa_imu_roll();                           // degrees
+ElyssaOrientation elyssa_imu_orientation();
+
+// IMU calibration (board still)
+bool elyssa_imu_calibrate_gyro(uint16_t ms = 1000);
+
+// IMU events: each check returns true ONCE per event
+// Tap can't be combined with free-fall / motion in the same sketch
+// (one chip setting: tap needs events not latched, the others latched).
+bool elyssa_imu_enable_tap();                      // sets 416 Hz if lower; check often
+bool elyssa_imu_tapped();
+bool elyssa_imu_double_tapped();
+bool elyssa_imu_enable_freefall();
+bool elyssa_imu_fell();
+bool elyssa_imu_enable_motion(uint8_t sensitivity = 2);  // 1 = most sensitive .. 63
+bool elyssa_imu_moved();
+
+// IMU step counter (sets 26 Hz if lower)
+bool     elyssa_imu_start_steps();
+uint16_t elyssa_imu_steps();
+bool     elyssa_imu_reset_steps();
+
+// IMU wake-up from deep sleep: call just before esp_deep_sleep_start()
+bool elyssa_imu_wake_on_motion(uint8_t sensitivity = 2);
+
+// RGB LED colours as a bit mask: bit0 = red, bit1 = green, bit2 = blue
+enum ElyssaColor : uint8_t {
+  ELYSSA_OFF     = 0,
+  ELYSSA_RED     = 1,
+  ELYSSA_GREEN   = 2,
+  ELYSSA_YELLOW  = 3,   // red + green
+  ELYSSA_BLUE    = 4,
+  ELYSSA_MAGENTA = 5,   // red + blue
+  ELYSSA_CYAN    = 6,   // green + blue
+  ELYSSA_WHITE   = 7    // red + green + blue
+};
+
+void setLedColor(ElyssaColor color);              // named colours (on/off)
+void setLedRGB(uint8_t r, uint8_t g, uint8_t b);  // any mix, 0..255 each (PWM)
 #endif
 
 //
@@ -63,6 +132,8 @@ static const uint8_t BOOT_BUTTON = 0;      // BOOT button, LOW when pressed
 // (open by default). When JP3 is bridged, do NOT use IO6 for anything else.
 static const uint8_t BAT_SENSE      = 7;
 
+// Battery charger BQ24092: no GPIO connection (CHG drives the red charge LED only)
+
 //
 // UART (header J12 pins 2/3)
 //
@@ -70,7 +141,7 @@ static const uint8_t TX = 43;
 static const uint8_t RX = 44;
 
 //
-// IMU (LSM6DSV, dedicated I2C bus, SA0 = GND -> address 0x6A)
+// IMU (LSM6DS3TR-C, dedicated I2C bus, SA0 = GND -> address 0x6A, WHO_AM_I = 0x6A)
 //
 static const uint8_t SDA_gyro = 17;
 static const uint8_t SCL_gyro = 18;
@@ -145,7 +216,14 @@ static const uint8_t PWM3 = 48;   // header pin 17, printed "PWM3"
 
 //
 // LEDs (active HIGH)
+// RGB LED (Elyssa v5): 3 separate channels, red = 39, green = 38, blue = 33.
+// Colour helpers setLedColor() / setLedRGB() are declared above (variant.cpp).
+// LED_BUILTIN stays on 38 = green, so Blink keeps working.
 //
+static const uint8_t LED_RED   = 39;
+static const uint8_t LED_GREEN = 38;
+static const uint8_t LED_BLUE  = 33;
+
 static const uint8_t LED_BUILTIN = 38;
 #define LED_BUILTIN LED_BUILTIN    // allow testing #ifdef LED_BUILTIN
 

@@ -214,7 +214,8 @@ elyssa.menu.EraseFlash.all.upload.erase_cmd=-e
 # platform.txt). Kept only because option keys are a contract.
 # Debugging requires MODE 2 (Hardware CDC and JTAG), plus the tools
 # openocd-esp32 and xtensa-esp-elf-gdb (not yet declared in the index).
-# External FTDI / bridge removed: JTAG pins (GPIO39-42) are not routed on Elyssa.
+# External FTDI / bridge removed: JTAG pins are not available on Elyssa
+# (GPIO39 = red LED on v5, GPIO40-42 not routed).
 elyssa.menu.JTAGAdapter.default=Disabled
 elyssa.menu.JTAGAdapter.default.build.copy_jtag_files=0
 elyssa.menu.JTAGAdapter.builtin=Integrated USB JTAG
