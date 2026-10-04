@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.1.2
+
+### Faster compiles
+Each compile used to launch 3 extra helper programs (esptool / gen_esp32part, about 1 s each on Windows) whose result never changes:
+- **Bootloader:** precomputed image in `variants/elyssa` (`bootloader_qio_80m.bin`), identical to what esptool 5.3.1 produces from the arduino-esp32 3.3.12 bootloader.
+- **Partition table:** precomputed for the 4 Elyssa schemes in `variants/elyssa/partitions_bin`. `gen_esp32part` still runs when a sketch (or the variant) has its own `partitions.csv`.
+- **Merged image:** the 8 MB `<sketch>.merged.bin` is no longer created (the IDE upload doesn't use it). It can still be made by hand with `esptool merge-bin`.
+
+### Changed
+- **Flash mode fixed to QIO 80 MHz** (the embedded flash of the ESP32-S3FN8). The DIO option was removed from Tools > Flash Mode.
+
+Nothing changes in the sketch, the libraries or the upload.
+
 ## 1.1.1
 
 ### Added

@@ -166,7 +166,11 @@ recipe.ar.pattern="{compiler.path}{compiler.ar.cmd}" {compiler.ar.flags} {compil
 recipe.c.combine.pattern="{compiler.path}{compiler.c.elf.cmd}" {compiler.c.elf.flags} {compiler.c.elf.extra_flags} -Wl,--start-group {object_files} "{archive_file_path}" {build.extra_libs} {build.zigbee_libs} {build.matter_libs} {compiler.c.elf.libs} {compiler.libraries.ldflags} -Wl,--end-group -Wl,-EL -o "{build.path}/{build.project_name}.elf"
 
 ## Create partitions.bin
-recipe.objcopy.partitions.bin.pattern={tools.gen_esp32part.cmd} -q "{build.path}/partitions.csv" "{build.path}/{build.project_name}.partitions.bin"
+## Moovma: the standard schemes are precomputed in {build.variant.path}/partitions_bin/ (same result as
+## gen_esp32part, which is a slow one-file program on Windows). gen_esp32part still runs when the
+## sketch or the variant has its own partitions.csv, or when no precomputed table exists.
+recipe.objcopy.partitions.bin.pattern=/usr/bin/env bash -c "( [ ! -f "{build.source.path}"/partitions.csv ] && [ ! -f "{build.variant.path}"/{build.custom_partitions}.csv ] && [ -f "{build.variant.path}"/partitions_bin/{build.partitions}.bin ] && cp -f "{build.variant.path}"/partitions_bin/{build.partitions}.bin "{build.path}"/{build.project_name}.partitions.bin ) || {tools.gen_esp32part.cmd} -q "{build.path}"/partitions.csv "{build.path}"/{build.project_name}.partitions.bin"
+recipe.objcopy.partitions.bin.pattern.windows=cmd /c IF EXIST "{build.source.path}\partitions.csv" ( {tools.gen_esp32part.cmd} -q "{build.path}\partitions.csv" "{build.path}\{build.project_name}.partitions.bin" ) ELSE ( IF EXIST "{build.variant.path}\{build.custom_partitions}.csv" ( {tools.gen_esp32part.cmd} -q "{build.path}\partitions.csv" "{build.path}\{build.project_name}.partitions.bin" ) ELSE ( IF EXIST "{build.variant.path}\partitions_bin\{build.partitions}.bin" ( COPY /y "{build.variant.path}\partitions_bin\{build.partitions}.bin" "{build.path}\{build.project_name}.partitions.bin" ) ELSE ( {tools.gen_esp32part.cmd} -q "{build.path}\partitions.csv" "{build.path}\{build.project_name}.partitions.bin" ) ) )
 
 ## Create bin
 recipe.objcopy.bin.pattern_args=--chip {build.mcu} elf2image --flash-mode "{build.flash_mode}" --flash-freq "{build.img_freq}" --flash-size "{build.flash_size}" --elf-sha256-offset 0xb0 -o "{build.path}/{build.project_name}.bin" "{build.path}/{build.project_name}.elf"
@@ -181,9 +185,9 @@ recipe.hooks.objcopy.postobjcopy.1.pattern.windows=cmd /c if exist "{build.path}
 recipe.hooks.objcopy.postobjcopy.2.pattern=/usr/bin/env bash -c "[ ! -d "{build.path}"/libraries/ESP_SR ] || [ ! -f "{compiler.sdk.path}"/esp_sr/srmodels.bin ] || cp -f "{compiler.sdk.path}"/esp_sr/srmodels.bin "{build.path}"/srmodels.bin"
 recipe.hooks.objcopy.postobjcopy.2.pattern.windows=cmd /c if exist "{build.path}\libraries\ESP_SR" if exist "{compiler.sdk.path}\esp_sr\srmodels.bin" COPY /y "{compiler.sdk.path}\esp_sr\srmodels.bin" "{build.path}\srmodels.bin"
 
-# Create merged binary
-recipe.hooks.objcopy.postobjcopy.3.pattern_args=--chip {build.mcu} merge-bin -o "{build.path}/{build.project_name}.merged.bin" --pad-to-size {build.flash_size} --flash-mode keep --flash-freq keep --flash-size keep {build.bootloader_addr} "{build.path}/{build.project_name}.bootloader.bin" 0x8000 "{build.path}/{build.project_name}.partitions.bin" 0xe000 "{runtime.platform.path}/tools/partitions/boot_app0.bin" 0x10000 "{build.path}/{build.project_name}.bin"
-recipe.hooks.objcopy.postobjcopy.3.pattern="{tools.esptool_py.path}/{tools.esptool_py.cmd}" {recipe.hooks.objcopy.postobjcopy.3.pattern_args}
+# Create merged binary: disabled by Moovma (the IDE upload doesn't use it; it launched esptool
+# and wrote an 8 MB file at every compile). To create it by hand:
+#   esptool --chip esp32s3 merge-bin -o merged.bin 0x0 <sketch>.bootloader.bin 0x8000 <sketch>.partitions.bin 0xe000 boot_app0.bin 0x10000 <sketch>.bin
 
 # Generate flash_args file
 # Do NOT change the spacing: specifically, do not insert whitespace between a closing quote (') and the following redirection/operator symbols (>, >>, &&). This avoids a bug in older arduino-builder versions shipped with IDE 1.x, which occurs if a quote (') character is directly followed by a whitespace.

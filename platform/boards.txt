@@ -88,6 +88,8 @@ elyssa.build.flash_size=8MB
 elyssa.build.flash_freq=80m
 elyssa.build.flash_mode=dio
 elyssa.build.boot=qio
+# Precomputed bootloader image in variants/elyssa (no esptool call at each compile)
+elyssa.build.custom_bootloader=bootloader_qio_80m
 elyssa.build.boot_freq=80m
 elyssa.build.partitions=default_8MB
 elyssa.build.defines=
@@ -157,17 +159,13 @@ elyssa.menu.PSRAM.disabled.build.psram_type=qspi
 elyssa.menu.FlashSize.8M=8MB (64Mb)
 elyssa.menu.FlashSize.8M.build.flash_size=8MB
 
-# Quad flash only: OPI and QIO 120MHz removed
+# Flash mode fixed to QIO 80 MHz (embedded flash of the ESP32-S3FN8). DIO, OPI and
+# QIO 120MHz removed. Kept as a single fixed entry so old sketches with FlashMode=qio still work.
 elyssa.menu.FlashMode.qio=QIO 80MHz
 elyssa.menu.FlashMode.qio.build.flash_mode=dio
 elyssa.menu.FlashMode.qio.build.boot=qio
 elyssa.menu.FlashMode.qio.build.boot_freq=80m
 elyssa.menu.FlashMode.qio.build.flash_freq=80m
-elyssa.menu.FlashMode.dio=DIO 80MHz
-elyssa.menu.FlashMode.dio.build.flash_mode=dio
-elyssa.menu.FlashMode.dio.build.boot=dio
-elyssa.menu.FlashMode.dio.build.boot_freq=80m
-elyssa.menu.FlashMode.dio.build.flash_freq=80m
 
 elyssa.menu.CPUFreq.240=240MHz (WiFi)
 elyssa.menu.CPUFreq.240.build.f_cpu=240000000L
