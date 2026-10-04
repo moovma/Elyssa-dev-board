@@ -39,4 +39,8 @@ Tested on Elyssa v5:
 Another installed library contains ST's LSM6DS3TR-C driver. The Elyssa board package already includes it: remove the other library.
 
 ## RGB LED
+
+### Red during upload
+The red LED lights up while a sketch is being uploaded. This is normal: the red channel is on GPIO39, which is also the JTAG clock pin (MTCK) and has an internal pull-up at reset. During an upload the chip runs its ROM bootloader, so no sketch code can turn it off. As soon as the new sketch starts, the board package turns the LED off (since 1.1.1).
+
 The green channel looks brighter than red and blue (same 330 ohm resistors, different LED efficiencies). Use `setLedRGB()` to balance mixed colours.

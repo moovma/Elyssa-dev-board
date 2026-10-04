@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.1.1
+
+### Added
+- `T10` touch pin = GPIO14 (the PWM1 pad). T10 and PWM1 are the same pin: use it for touch or for PWM.
+
+### Fixed
+- RGB LED: the red LED no longer glows dimly when a sketch doesn't use the LED. The red channel is on GPIO39 (JTAG MTCK), which has an internal pull-up at reset; the board package now turns the 3 LED pins off at startup (`initVariant()`). The LED is still red during an upload (the chip's ROM bootloader is running, no sketch code can act then).
+
+### Changed
+- Package name **Moovma** (Boards Manager and Tools > Board menu), to host future Moovma boards. The board is still called Elyssa.
+
 ## 1.1.0
 
 Board package for Elyssa v5. Existing sketches keep working.

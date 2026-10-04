@@ -656,3 +656,20 @@ void setLedRGB(uint8_t r, uint8_t g, uint8_t b) {
   analogWrite(LED_GREEN, g);
   analogWrite(LED_BLUE, b);
 }
+
+//
+// Startup: called by the ESP32 core before setup() (initArduino -> initVariant)
+//
+// The red LED is on GPIO39 = MTCK (JTAG clock). At reset the ESP32-S3 enables
+// the internal weak pull-up of this pin (datasheet, pin 44, note 7), which makes
+// the red LED glow when the sketch never uses the LED. Driving the three LED
+// pins LOW here turns the LED fully off as soon as any sketch starts.
+// (Before this point - upload, ROM boot - only hardware can change it.)
+//
+extern "C" void initVariant(void) {
+  const uint8_t pins[3] = { LED_RED, LED_GREEN, LED_BLUE };
+  for (uint8_t i = 0; i < 3; i++) {
+    pinMode(pins[i], OUTPUT);
+    digitalWrite(pins[i], LOW);
+  }
+}

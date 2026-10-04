@@ -1,4 +1,4 @@
-name=Moovma Elyssa
+name=Moovma
 version=3.3.12
 
 tools.esp32-arduino-libs.path={runtime.tools.{build.chip_variant}-libs.path}

@@ -27,14 +27,14 @@ ESP32-S3FN8 based development board by Moovma.
    https://raw.githubusercontent.com/yassinechouk/Elyssa-dev-board/main/elyssa-arduino/package_moovma_elyssa_index.json
    ```
 
-3. Open **Tools → Board → Boards Manager**, search **Elyssa**, and click **Install**.
+3. Open **Tools → Board → Boards Manager**, search **Moovma**, and click **Install** (the package contains the Elyssa board).
 
 **Linux / macOS:** install Python 3.
 
 ### 2. Connect the board
 
 1. Plug the board in with a USB-C **data** cable.
-2. Select **Tools → Board → Moovma Elyssa → Elyssa**.
+2. Select **Tools → Board → Moovma → Elyssa**.
 3. Select **Tools → Port →** the port labelled **Elyssa**.
 
 Keep the other **Tools** options at their default values.

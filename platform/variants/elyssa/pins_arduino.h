@@ -194,8 +194,10 @@ static const uint8_t A6 = 7;
 #define A9 SCL
 
 //
-// Touch (T0..T6 = header IO0..IO6 = GPIO1..GPIO7, T8/T9 = SDA/SCL = GPIO8/GPIO9)
-// There is no T7. Avoid T8/T9 for touch when I2C is used (4.7k pull-ups)
+// Touch (T0..T6 = header IO0..IO6 = GPIO1..GPIO7, T8/T9 = SDA/SCL = GPIO8/GPIO9,
+//        T10 = PWM1 = GPIO14)
+// There is no T7. Avoid T8/T9 for touch when I2C is used (4.7k pull-ups).
+// T10 and PWM1 are the same pin: use it for touch OR for PWM.
 //
 static const uint8_t T0 = 1;
 static const uint8_t T1 = 2;
@@ -206,6 +208,7 @@ static const uint8_t T5 = 6;
 static const uint8_t T6 = 7;
 static const uint8_t T8 = 8;
 static const uint8_t T9 = 9;
+static const uint8_t T10 = 14;
 
 //
 // PWM (names = silkscreen; nets PWM2/PWM3 are crossed on J12)
