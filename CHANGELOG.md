@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.1.3
+
+### Fixed
+- **Wi-Fi on Elyssa v5: transmit power limited to 11 dBm.** The Elyssa v5 Wi-Fi transmitter gives a clean signal only up to about 12 to 14 dBm, depending on the router and the channel. At the ESP32 default of 20 dBm the router could not decode the board's frames: connecting often failed (reason 2 `AUTH_EXPIRE`) or the speed fell to about 1 Mbit/s. Measured on the board (9 runs, 2 routers): full speed (about 22 Mbit/s) at 11 dBm on every run, speed dropping from 12 dBm on the worst router and 14 dBm on the best, under 10 % of full speed from 13.5 to 15 dBm, no connection at 19 to 20 dBm; reception is not affected. The board package now sets 11 dBm (2.5 dB below the lowest collapse measured) every time Wi-Fi starts (station, access point, ESP-NOW), so every sketch works without change. The range is lower than a board working at 20 dBm (about one wall less indoors). Sketches without Wi-Fi are not affected (same size).
+- **Compiling on Linux and macOS** failed after "Successfully created ESP32-S3 image" with `unexpected EOF while looking for matching '"'` (quotes in the partition table recipe). Windows was not affected.
+
+Bluetooth LE is not limited: its default power (+9 dBm) works, and connection, scan and Wi-Fi + Bluetooth coexistence were tested on the board.
+
 ## 1.1.2
 
 ### Faster compiles
