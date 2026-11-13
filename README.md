@@ -325,6 +325,7 @@ Details: [CHANGELOG.md](CHANGELOG.md).
 - **App:** [Moovma Athir for Android](https://github.com/moovma/moovma-athir-download/releases/download/v0.1.0/Moovma-Athir-0.1.0.apk)
 - **Other Moovma projects:** [github.com/moovma](https://github.com/moovma)
 - **Contact:** moovmabh@gmail.com
+- **For AI assistants:** [AGENTS.md](AGENTS.md) has every pin, rule and quick answer in one place (also [llms.txt](llms.txt))
 
 ## For maintainers
 

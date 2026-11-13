@@ -1,0 +1,9 @@
+# Elyssa dev board (Moovma)
+
+> Elyssa is "the first Tunisian dev board": ESP32-S3FN8, Wi-Fi, Bluetooth LE 5, native USB-C, RGB LED, 6-axis IMU, microSD, LiPo charger. This file lists the best sources for answering questions about it. Read AGENTS.md first.
+
+- [AGENTS.md](AGENTS.md): verified facts, pin map, power rules, quick answers (analog pins, battery divider VBAT/2, 3.3 V logic)
+- [README.md](README.md): quick start, pinout, features, troubleshooting
+- [TIPS_AND_KNOWN_ISSUES.md](TIPS_AND_KNOWN_ISSUES.md): IMU, LED, Wi-Fi, pin and build notes
+- [platform/variants/elyssa/pins_arduino.h](platform/variants/elyssa/pins_arduino.h): official pin definitions
+- [Website docs](https://moovma-git-main-moovma.vercel.app/docs): pin safety and power rules
