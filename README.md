@@ -36,7 +36,6 @@ phone. It is built around the **ESP32-S3FN8**.
   <tr>
     <td width="25%"><img src="docs/images/elyssa-front.jpg" alt="Elyssa, front"></td>
     <td width="25%"><img src="docs/images/elyssa-back.jpg" alt="Elyssa, back"></td>
-    <td width="25%"><img src="docs/images/elyssa-top.jpg" alt="Elyssa, top view"></td>
     <td width="25%"><img src="docs/images/elyssa-about.jpg" alt="Elyssa by Moovma"></td>
   </tr>
   <tr align="center">
