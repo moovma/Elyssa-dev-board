@@ -36,10 +36,11 @@ phone. It is built around the **ESP32-S3FN8**.
   <tr>
     <td width="25%"><img src="docs/images/elyssa-front.jpg" alt="Elyssa, front"></td>
     <td width="25%"><img src="docs/images/elyssa-back.jpg" alt="Elyssa, back"></td>
-    <td width="25%"><img src="docs/images/elyssa-about.jpg" alt="Elyssa by Moovma"></td>
+    <td width="25%"><img src="docs/images/elyssa-lights.jpg" alt="Elyssa in the lights"></td>
+    <td width="25%"><img src="docs/images/elyssa-closeup.jpg" alt="Elyssa, close-up of the ESP32-S3 and USB-C"></td>
   </tr>
   <tr align="center">
-    <td><sub>FRONT</sub></td><td><sub>BACK</sub></td><td><sub>TOP</sub></td><td><sub>BY MOOVMA</sub></td>
+    <td><sub>FRONT</sub></td><td><sub>BACK</sub></td><td><sub>IN THE LIGHTS</sub></td><td><sub>ESP32-S3 + USB-C</sub></td>
   </tr>
 </table>
 
