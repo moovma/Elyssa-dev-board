@@ -1,23 +1,54 @@
-# Elyssa Dev Board
+<div align="center">
 
-ESP32-S3FN8 based development board by Moovma.
+# Elyssa
 
-## Features
+### The first Tunisian dev board
 
-- ESP32-S3FN8: dual-core 240 MHz, Wi-Fi, Bluetooth LE 5, 8 MB embedded flash (no PSRAM)
-- Native USB-C: programming and serial monitor over one cable
-- RGB LED (separate red, green and blue channels)
-- 6-axis motion sensor (IMU: accelerometer + gyroscope) on a dedicated I2C bus
-- microSD card slot (own SPI bus)
-- Header with 7 analog / touch / digital pins, I2C, SPI, UART and PWM
-- Qwiic I2C connector
-- BOOT button
-- LiPo battery charger (BQ24092) and optional battery voltage measurement
-- Arduino IDE support, with built-in RGB LED and IMU functions
+ESP32-S3 · Wi-Fi · Bluetooth LE 5 · USB-C · RGB LED · motion sensor · microSD · LiPo charger
+
+**[Website](https://moovma-git-main-moovma.vercel.app)** ·
+**[Download the Moovma Athir app](https://github.com/moovma/moovma-athir-download/releases/download/v0.1.0/Moovma-Athir-0.1.0.apk)** ·
+**[Quick start](#quick-start-5-minutes)** ·
+**[Pinout](#pinout)** ·
+**[Help](#troubleshooting)**
+
+*na3mlou MoovMa sa7bi #*
+
+</div>
 
 ---
 
-## Getting started (Arduino IDE)
+## What is Elyssa?
+
+Elyssa is a small, friendly development board made by [Moovma](https://moovma-git-main-moovma.vercel.app) for makers,
+students and engineers. Plug it in with one USB-C cable, program it from the Arduino IDE, and control it from your
+phone. It is built around the **ESP32-S3FN8**.
+
+| | |
+|---|---|
+| **Brain** | ESP32-S3FN8: dual-core 240 MHz, 8 MB embedded flash (no PSRAM) |
+| **Wireless** | Wi-Fi and Bluetooth LE 5 |
+| **USB** | Native USB-C: programming and serial monitor over one cable |
+| **Built-in** | RGB LED (separate red, green, blue), 6-axis motion sensor (accelerometer + gyroscope), BOOT button |
+| **Storage** | microSD slot on its own SPI bus |
+| **Pins** | 7 analog / touch / digital pins, I2C, SPI, UART, PWM, plus a Qwiic connector |
+| **Power** | LiPo charger (BQ24092) and optional battery voltage measurement |
+| **Software** | Arduino IDE support with built-in RGB LED and motion sensor functions |
+
+## Control Elyssa from your phone: Moovma Athir
+
+**Moovma Athir** is the free Android app made for Elyssa. Connect over Bluetooth or Wi-Fi and use ready-made
+interfaces: remote robot car, drone / plane controller, motion sensor with a 3D board, messenger, light switch.
+Each interface comes with a sketch you can copy into Elyssa and change. It also updates your board's firmware over
+the air (OTA). English, French and Tunisian Arabic. No account needed.
+
+**[Download the app (APK)](https://github.com/moovma/moovma-athir-download/releases/download/v0.1.0/Moovma-Athir-0.1.0.apk)**
+· [All releases](https://github.com/moovma/moovma-athir-download/releases)
+
+Install: open the downloaded file, allow "install unknown apps" when Android asks, tap Install.
+No board yet? Turn on **Settings > Preview mode** in the app to try everything with a simulated Elyssa.
+
+## Quick start (5 minutes)
 
 ### 1. Install the board package
 
@@ -45,18 +76,21 @@ Keep the other **Tools** options at their default values.
 1. Open **File → Examples → 01.Basics → Blink**.
 2. Click **Upload**. The on-board LED starts blinking.
 
-### If the upload fails
+> **If the upload fails:** put the board in download mode by hand: **hold BOOT, press and release RESET, then
+> release BOOT**. Select the port that appears and click **Upload** again. This is usually needed only once.
 
-Put the board in download mode manually: **hold BOOT, press and release RESET, then release BOOT**.
-Select the port that appears and click **Upload** again. This is usually needed only once.
+**Serial Monitor:** open **Tools → Serial Monitor**. Press **RESET** to see the first messages.
 
-### Serial Monitor
+**Compile times:** the first compile of a new sketch is the slowest (about 40 to 90 s on our Windows test PC, longer
+with big libraries such as Wi-Fi or Bluetooth). Compiling the same sketch again takes about 7 to 9 s. The first
+compile after installing a new package version also rebuilds the ESP32 core once (1 to 4 minutes). See
+[TIPS_AND_KNOWN_ISSUES.md](TIPS_AND_KNOWN_ISSUES.md#compile-times) to speed it up.
 
-Open **Tools → Serial Monitor**. Press **RESET** to see the first messages.
+### 4. Make it talk to the app
 
-### Compile times
-
-The **first** compile of a new sketch is the slowest (about 40 to 90 s on our Windows test PC, longer with big libraries such as Wi-Fi or Bluetooth). Compiling the **same sketch again** takes about 7 to 9 s. The first compile after installing a new version of the package also rebuilds the ESP32 core once (1 to 4 minutes). See [TIPS_AND_KNOWN_ISSUES.md](TIPS_AND_KNOWN_ISSUES.md#compile-times) to speed it up.
+Open the app, pick an interface (for example **Light**), tap **Get the code**, copy the sketch into the Arduino IDE
+and upload it. For firmware updates without a cable, use **Board → Update firmware** in the app: it writes the
+one-time "OTA-ready" sketch for you.
 
 ---
 
@@ -77,9 +111,11 @@ Names follow the **silkscreen** of the board. All of them are available in sketc
 | Battery voltage | `BAT_SENSE` | 7 | same pin as `IO6`; only if solder jumper **JP3** is bridged |
 | IMU (internal I2C bus) | `SDA_gyro`, `SCL_gyro`, `INT_gyro` | 17, 18, 21 | address 0x6A, `Wire1` uses these pins |
 
-There is no `A7` and no `T7`. The internal flash pins are not exposed.
+There is no `A7` and no `T7`. The internal flash pins are not exposed. The website has a pin-safety guide
+(which pins are safe to use, which need care): [Elyssa docs](https://moovma-git-main-moovma.vercel.app/docs#pin-safety).
 
-### Small examples
+<details>
+<summary><b>Small code examples</b> (touch, analog, PWM, I2C, microSD, battery)</summary>
 
 ```cpp
 Serial.println(touchRead(T10));                 // touch: T0..T6, T8, T9, T10
@@ -114,9 +150,13 @@ float vbat = analogReadMilliVolts(BAT_SENSE) * 2 / 1000.0;   // BAT_SENSE = VBAT
 
 The battery charger has no GPIO: its CHG output only drives the red charge LED.
 
+</details>
+
 ---
 
-## RGB LED
+## Built-in features
+
+### RGB LED
 
 Built into the board package: no `#include` needed.
 
@@ -131,13 +171,13 @@ setLedRGB(255, 80, 0);         // any mix, 0..255 per channel
 | Green | `LED_GREEN` = GPIO38 (`LED_BUILTIN`, so Blink works) |
 | Blue | `LED_BLUE` = GPIO33 |
 
-The LED is off when a sketch starts. It lights up red while a sketch is being uploaded: this is normal (see [TIPS_AND_KNOWN_ISSUES.md](TIPS_AND_KNOWN_ISSUES.md#red-during-upload)).
+The LED is off when a sketch starts. It lights up red while a sketch is being uploaded: this is normal (see
+[TIPS_AND_KNOWN_ISSUES.md](TIPS_AND_KNOWN_ISSUES.md#red-during-upload)).
 
----
+### Motion sensor (IMU)
 
-## Motion sensor (IMU)
-
-The board has an STMicroelectronics LSM6DS3TR-C: accelerometer (in g) and gyroscope (in degrees per second). The basic functions are built into the board package, with no `#include`:
+The board has an STMicroelectronics LSM6DS3TR-C: accelerometer (in g) and gyroscope (in degrees per second). The
+basic functions are built into the board package, with no `#include`:
 
 ```cpp
 void setup() {
@@ -155,17 +195,28 @@ void loop() {
 }
 ```
 
-Basic functions: reading (acceleration, rotation, temperature), ranges, sample rate, low power, pitch / roll / orientation, gyroscope calibration, tap and double tap, free-fall, motion, step counter, wake-up from deep sleep by motion.
+Basic functions: reading (acceleration, rotation, temperature), ranges, sample rate, low power, pitch / roll /
+orientation, gyroscope calibration, tap and double tap, free-fall, motion, step counter, wake-up from deep sleep by
+motion.
 
-Advanced functions (recording, filters, self-test, accelerometer calibration, stillness, tilt, wrist tilt, significant motion, interrupt pin...) are in the **ElyssaIMU** library, also included in the board package: add `#include <ElyssaIMU.h>`.
+Advanced functions (recording, filters, self-test, accelerometer calibration, stillness, tilt, wrist tilt,
+significant motion, interrupt pin...) are in the **ElyssaIMU** library, also included in the board package: add
+`#include <ElyssaIMU.h>`.
 
-Examples: **File → Examples → ElyssaIMU** (Basics and Advanced). Full reference: [ElyssaIMU README](platform/libraries/ElyssaIMU/README.md). Known limitations: [TIPS_AND_KNOWN_ISSUES.md](TIPS_AND_KNOWN_ISSUES.md).
+Examples: **File → Examples → ElyssaIMU** (Basics and Advanced). Full reference:
+[ElyssaIMU README](platform/libraries/ElyssaIMU/README.md). Known limitations:
+[TIPS_AND_KNOWN_ISSUES.md](TIPS_AND_KNOWN_ISSUES.md). You can also see the motion in the app: the **Motion**
+interface shows a 3D board, all the values and alerts such as free fall.
 
-The IMU is read over I2C at 400 kHz. Live reading with `elyssa_imu_ready()` keeps up with every sample up to 833 Hz; above that, use the recording (FIFO) functions of the ElyssaIMU library.
+The IMU is read over I2C at 400 kHz. Live reading with `elyssa_imu_ready()` keeps up with every sample up to
+833 Hz; above that, use the recording (FIFO) functions of the ElyssaIMU library.
 
 ---
 
-## Tools menu (defaults)
+## Reference
+
+<details>
+<summary><b>Arduino Tools menu (defaults)</b></summary>
 
 | Menu | Value |
 |---|---|
@@ -185,9 +236,10 @@ The IMU is read over I2C at 400 kHz. Live reading with `elyssa_imu_ready()` keep
 | Erase All Flash Before Sketch Upload | Disabled |
 | JTAG Adapter | Disabled |
 
----
+</details>
 
-## USB modes
+<details>
+<summary><b>USB modes</b> (everyday and debug / JTAG)</summary>
 
 | | Mode 1 - Everyday (default) | Mode 2 - Debug (JTAG) |
 |---|---|---|
@@ -195,23 +247,15 @@ The IMU is read over I2C at 400 kHz. Live reading with `elyssa_imu_ready()` keep
 | Upload Mode | USB-OTG CDC (TinyUSB) | UART0 / Hardware CDC |
 | JTAG Adapter | Disabled | Integrated USB JTAG |
 
-### Mode 1 → Mode 2
+**Mode 1 → Mode 2:** 1. **USB Mode → Hardware CDC and JTAG**, 2. **Upload**, 3. **Upload Mode → UART0 / Hardware
+CDC**, 4. **JTAG Adapter → Integrated USB JTAG**.
 
-1. **USB Mode → Hardware CDC and JTAG**
-2. **Upload**
-3. **Upload Mode → UART0 / Hardware CDC**
-4. **JTAG Adapter → Integrated USB JTAG**
-
-### Mode 2 → Mode 1
-
-1. **USB Mode → USB-OTG (TinyUSB)**
-2. **Upload**
-3. **Upload Mode → USB-OTG CDC (TinyUSB)**
-4. **JTAG Adapter → Disabled**
+**Mode 2 → Mode 1:** 1. **USB Mode → USB-OTG (TinyUSB)**, 2. **Upload**, 3. **Upload Mode → USB-OTG CDC (TinyUSB)**,
+4. **JTAG Adapter → Disabled**.
 
 If an upload fails: **hold BOOT, press and release RESET, release BOOT**, then **Upload** again.
 
----
+</details>
 
 ## Troubleshooting
 
@@ -226,10 +270,10 @@ If an upload fails: **hold BOOT, press and release RESET, release BOOT**, then *
 | `T10` and `PWM1` do not work together | They are the same pin (GPIO14): use it for touch **or** for PWM. |
 | The first compile is very slow | Normal for a new sketch. See [Compile times](TIPS_AND_KNOWN_ISSUES.md#compile-times). |
 | "Invalid FQBN" after an update | Select the board again in **Tools → Board → Moovma → Elyssa**. |
+| The app cannot find the board | Make sure the sketch contains MoovmaLink (the app's sketches do). Join the **Elyssa-XXXX** Wi-Fi, or allow Bluetooth and Location (needed by Android to scan). |
 
 More details and known issues: [TIPS_AND_KNOWN_ISSUES.md](TIPS_AND_KNOWN_ISSUES.md).
-
----
+Still stuck? Write to **moovmabh@gmail.com**.
 
 ## What has been tested
 
@@ -238,15 +282,17 @@ Tested on Elyssa v5:
 - Upload in both USB modes, Blink, Serial Monitor
 - RGB LED (all colours and `setLedRGB()`)
 - IMU: reading, angles, orientation, tap, double tap, free-fall, motion, steps, wake-up from deep sleep (61 of 61 checks)
-- ElyssaIMU library: 90 of 93 checks (the 3 failures are the wrist-tilt issue listed in [TIPS_AND_KNOWN_ISSUES.md](TIPS_AND_KNOWN_ISSUES.md))
+- ElyssaIMU library: 90 of 93 checks (the 3 failures are the wrist-tilt issue listed in
+  [TIPS_AND_KNOWN_ISSUES.md](TIPS_AND_KNOWN_ISSUES.md))
 - Touch on `IO0` to `IO5` and `T10`, BOOT button
 - Pin constants of `pins_arduino.h` (self-test)
-- Wi-Fi: scan, connect, ping, 21 to 23 Mbit/s, 2-minute stability, at the 11 dBm limit set by the package (see [TIPS_AND_KNOWN_ISSUES.md](TIPS_AND_KNOWN_ISSUES.md#wi-fi-transmit-power-is-limited-to-11-dbm-since-113))
+- Wi-Fi: scan, connect, ping, 21 to 23 Mbit/s, 2-minute stability, at the 11 dBm limit set by the package (see
+  [TIPS_AND_KNOWN_ISSUES.md](TIPS_AND_KNOWN_ISSUES.md#wi-fi-transmit-power-is-limited-to-11-dbm-since-113))
 - Bluetooth LE: start, scan, advertising from -12 to +20 dBm, phone connection, Wi-Fi + Bluetooth together
 
-Not tested on a board yet: microSD with a card, battery charging and `BAT_SENSE`, external I2C devices (header and Qwiic), the `PWM2` / `PWM3` pins against the silkscreen, deep-sleep current.
-
----
+Not tested on a board yet: microSD with a card, battery charging and `BAT_SENSE`, external I2C devices (header and
+Qwiic), the `PWM2` / `PWM3` pins against the silkscreen, deep-sleep current. The Moovma Athir app has been tried with
+its built-in simulated board, but not yet with a real Elyssa.
 
 ## Version history
 
@@ -261,12 +307,19 @@ Not tested on a board yet: microSD with a card, battery charging and `BAT_SENSE`
 
 Details: [CHANGELOG.md](CHANGELOG.md).
 
----
+## Links
+
+- **Website:** <https://moovma-git-main-moovma.vercel.app> (product page, docs, pin safety, shop)
+- **App:** [Moovma Athir for Android](https://github.com/moovma/moovma-athir-download/releases/download/v0.1.0/Moovma-Athir-0.1.0.apk)
+- **Other Moovma projects:** [github.com/moovma](https://github.com/moovma)
+- **Contact:** moovmabh@gmail.com
 
 ## For maintainers
 
-How to build, test and publish a release, and what to redo when the ESP32 core is updated: [docs/MAINTENANCE.md](docs/MAINTENANCE.md).
+How to build, test and publish a release, and what to redo when the ESP32 core is updated:
+[docs/MAINTENANCE.md](docs/MAINTENANCE.md).
 
 ## License
 
-MIT, see [LICENSE](LICENSE). ST's LSM6DS3TR-C driver (`platform/variants/elyssa/`) is BSD-3-Clause, see `LICENSE_ST.txt` in the same folder.
+MIT, see [LICENSE](LICENSE). ST's LSM6DS3TR-C driver (`platform/variants/elyssa/`) is BSD-3-Clause, see
+`LICENSE_ST.txt` in the same folder.
