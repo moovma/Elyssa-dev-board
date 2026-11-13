@@ -1,18 +1,15 @@
 <div align="center">
 
-# Elyssa
+<img src="docs/images/banner.png" alt="Elyssa, the first Tunisian dev board" width="100%">
 
-### The first Tunisian dev board
+<br>
 
-ESP32-S3 · Wi-Fi · Bluetooth LE 5 · USB-C · RGB LED · motion sensor · microSD · LiPo charger
+<a href="https://moovma-git-main-moovma.vercel.app"><img alt="Website" src="https://img.shields.io/badge/WEBSITE-000000?style=for-the-badge"></a>
+<a href="https://github.com/moovma/moovma-athir-download/releases/download/v0.1.0/Moovma-Athir-0.1.0.apk"><img alt="Download the app" src="https://img.shields.io/badge/DOWNLOAD%20THE%20APP-000000?style=for-the-badge"></a>
+<a href="#quick-start-5-minutes"><img alt="Quick start" src="https://img.shields.io/badge/QUICK%20START-000000?style=for-the-badge"></a>
+<a href="#pinout"><img alt="Pinout" src="https://img.shields.io/badge/PINOUT-000000?style=for-the-badge"></a>
 
-**[Website](https://moovma-git-main-moovma.vercel.app)** ·
-**[Download the Moovma Athir app](https://github.com/moovma/moovma-athir-download/releases/download/v0.1.0/Moovma-Athir-0.1.0.apk)** ·
-**[Quick start](#quick-start-5-minutes)** ·
-**[Pinout](#pinout)** ·
-**[Help](#troubleshooting)**
-
-*na3mlou MoovMa sa7bi #*
+<sub>*na3mlou MoovMa sa7bi #*</sub>
 
 </div>
 
@@ -35,7 +32,22 @@ phone. It is built around the **ESP32-S3FN8**.
 | **Power** | LiPo charger (BQ24092) and optional battery voltage measurement |
 | **Software** | Arduino IDE support with built-in RGB LED and motion sensor functions |
 
+<table>
+  <tr>
+    <td width="25%"><img src="docs/images/elyssa-front.jpg" alt="Elyssa, front"></td>
+    <td width="25%"><img src="docs/images/elyssa-back.jpg" alt="Elyssa, back"></td>
+    <td width="25%"><img src="docs/images/elyssa-top.jpg" alt="Elyssa, top view"></td>
+    <td width="25%"><img src="docs/images/elyssa-about.jpg" alt="Elyssa by Moovma"></td>
+  </tr>
+  <tr align="center">
+    <td><sub>FRONT</sub></td><td><sub>BACK</sub></td><td><sub>TOP</sub></td><td><sub>BY MOOVMA</sub></td>
+  </tr>
+</table>
+
 ## Control Elyssa from your phone: Moovma Athir
+
+<a href="https://github.com/moovma/moovma-athir-download/releases/download/v0.1.0/Moovma-Athir-0.1.0.apk"><img src="docs/images/app-banner.png" alt="Moovma Athir, the free Android app for Elyssa" width="100%"></a>
+
 
 **Moovma Athir** is the free Android app made for Elyssa. Connect over Bluetooth or Wi-Fi and use ready-made
 interfaces: remote robot car, drone / plane controller, motion sensor with a 3D board, messenger, light switch.
